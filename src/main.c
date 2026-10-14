@@ -60,13 +60,14 @@ void main(void)
 
     while (1) {
         // Toggle do LED usando a nova API
+        //para (counter == X)
         if (counter == 350)
         {
             gpio_pin_set_dt(&led_verde, 1);
             k_msleep(1);
             gpio_pin_set_dt(&led_verde, 0);
         }
-        
+        //para (counter == Y)
         if (counter == 1000)
         {
             gpio_pin_set_dt(&led_azul, 1);
@@ -74,6 +75,7 @@ void main(void)
             gpio_pin_set_dt(&led_azul, 0);
         }
         counter++;
+        // (counter > MMC de X e Y)
         if (counter > 7000)
         {
             counter = 0;
