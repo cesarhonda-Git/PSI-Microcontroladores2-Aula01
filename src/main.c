@@ -56,19 +56,29 @@ void main(void)
 
     printk("LED azul blinking on %s pin %d\n", led_azul.port->name, led_azul.pin);
 
+    uint32_t counter = 0;
+
     while (1) {
         // Toggle do LED usando a nova API
-        gpio_pin_set_dt(&led_verde, 1);
+        if (counter == 350)
+        {
+            gpio_pin_set_dt(&led_verde, 1);
+            k_msleep(1);
+            gpio_pin_set_dt(&led_verde, 0);
+        }
+        
+        if (counter == 1000)
+        {
+            gpio_pin_set_dt(&led_azul, 1);
+            k_msleep(1);
+            gpio_pin_set_dt(&led_azul, 0);
+        }
+        counter++;
+        if (counter > 7000)
+        {
+            counter = 0;
+        }
+        
         k_msleep(1);
-        gpio_pin_set_dt(&led_verde, 0);
-        k_msleep(SLEEP_TIME_MS);
-
-        gpio_pin_set_dt(&led_verde, 1);
-        k_msleep(1);
-        gpio_pin_set_dt(&led_verde, 0);
-        gpio_pin_set_dt(&led_azul, 1);
-        k_msleep(1);
-        gpio_pin_set_dt(&led_azul, 0);
-        k_msleep(SLEEP_TIME_MS);
     }
 }
