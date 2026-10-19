@@ -51,7 +51,7 @@ void thread_led_verde(void *p1, void *p2, void *p3) {
         gpio_pin_set_dt(&led_verde, 1);
         k_msleep(1);
         gpio_pin_set_dt(&led_verde, 0);
-        k_msleep(500);
+        k_msleep(350);
     }
 }
 
