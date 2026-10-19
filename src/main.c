@@ -13,7 +13,6 @@
 static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
 static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
 
-
 int main(void)
 {
     int g,b;
