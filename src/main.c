@@ -28,7 +28,7 @@ void gustavo(void)
 {
     while (1) {
         gpio_pin_toggle_dt(&green);
-        k_msleep(500);
+        k_msleep(350);
     }
 }
 
