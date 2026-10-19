@@ -2,16 +2,14 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
-#define tempo 500
-
 // Define o LED usando Device Tree
-#define verde DT_ALIAS(led0)
-#define azul DT_ALIAS(led1)
+#define led_verde DT_ALIAS(led0)
+#define led_azul DT_ALIAS(led1)
 
 // Verifica se o LED está definido no Device Tree
 
-static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
-static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
+static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(led_verde, gpios);
+static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(led_azul, gpios);
 
 int main(void)
 {
@@ -23,15 +21,11 @@ int main(void)
 
     while (1) {
 
-        k_msleep(tempo);
+        k_msleep(350);
         gpio_pin_toggle_dt(&azul);
+
+        k_msleep(650);
         gpio_pin_toggle_dt(&verde);
-        k_msleep(10);
-        gpio_pin_toggle_dt(&azul);
-        gpio_pin_toggle_dt(&verde);
-        k_msleep(tempo);
-        gpio_pin_toggle_dt(&verde);
-        k_msleep(10);
-        gpio_pin_toggle_dt(&verde);
+
     }
 }
