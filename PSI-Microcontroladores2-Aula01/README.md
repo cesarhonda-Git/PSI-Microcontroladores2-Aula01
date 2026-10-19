@@ -19,7 +19,7 @@ Materiais para consulta: https://frdm-kl25z-com-zephyr-rtos.super.site/instalao,
 - [ x ] Compile e execute o exemplo de piscar led baremetal na placa Freedom com o Zephyr versão 4.2 (vide [https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/2-pisca-led-simples](https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/1-exemplo-pisca-led-rtos/atualizao-para-o-zephyr-42)). Dica: Utilize por enquanto somente o led da placa
 - [ x ] Faça alterações no código para controlar dois leds: um led deve piscar a cada segundo, e o segundo led deve piscar a cada meio segundo
 - [ x ] Desafio: tente fazer com que o primeiro led pisque a cada segundo, e o segundo led pisque a cada 350 ms
-- [ ] Crie um planejamento de testes para verificação do correto funcionamento, detalhando quais são os resultados esperados
+- [ x ] Crie um planejamento de testes para verificação do correto funcionamento, detalhando quais são os resultados esperados
 1) Verificamos se o LED está definido no Device Tree, como em:
 #if DT_NODE_HAS_STATUS(LED0_NODE, okay)
 static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
@@ -40,13 +40,13 @@ static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 4) E damos como saida no terminal o pino e a porta do led, como em:
     printk("LED verde blinking on %s pin %d\n", led_verde.port->name, led_verde.pin);
 
-- [ ] Abra uma Pull Request
+- [ x ] Abra uma Pull Request
 - [ ] Seu par irá avaliar a Pull Request: adicionar sugestões em issues ou na discussão do PR (ATENÇÃO: o par deve tentar executar os testes propostos, e mesmo em caso de tudo funcionar, registrar em comentários como a validação foi realizada)
 - [ ] Após as pendências serem resolvidas, seu par irá validar as melhorias e aceitar a PR
 
 ### Atividade Threads (implementação individual, validação em dupla)
-- [ ] Crie uma branch chamada threads
-- [ ] Compile e execute o exemplo de piscar led com threads na placa Freedom (vide [https://github.com/platformio/platform-freescalekinetis/blob/develop/examples/zephyr-blink/src/main.c e https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/1-exemplo-pisca-led-rtos](https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/threads-zephyr-42))
+- [ x ] Crie uma branch chamada threads
+- [ x ] Compile e execute o exemplo de piscar led com threads na placa Freedom (vide [https://github.com/platformio/platform-freescalekinetis/blob/develop/examples/zephyr-blink/src/main.c e https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/1-exemplo-pisca-led-rtos](https://frdm-kl25z-com-zephyr-rtos.super.site/tutoriais/threads-zephyr-42))
 - [ ] Faça alterações no código para controlar dois leds: um led deve piscar a cada segundo, e o segundo led deve piscar a cada meio segundo
 - [ ] Desafio: tente fazer com que o primeiro led pisque a cada segundo, e o segundo led pisque a cada 350 ms
 - [ ] Crie um planejamento de testes para verificação do correto funcionamento, detalhando quais são os resultados esperados

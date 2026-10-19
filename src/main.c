@@ -61,14 +61,14 @@ void main(void)
     while (1) {
         // Toggle do LED usando a nova API
         //para (counter == X)
-        if (counter == 350)
+        if (counter%350 == 0)
         {
             gpio_pin_set_dt(&led_verde, 1);
             k_msleep(1);
             gpio_pin_set_dt(&led_verde, 0);
         }
         //para (counter == Y)
-        if (counter == 1000)
+        if (counter%1000 == 0)
         {
             gpio_pin_set_dt(&led_azul, 1);
             k_msleep(1);
