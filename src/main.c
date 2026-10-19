@@ -2,85 +2,36 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
-#define SLEEP_TIME_MS 500
+#define tempo 500
 
 // Define o LED usando Device Tree
-#define LED0_NODE DT_ALIAS(led0)//led verde 
-#define LED1_NODE  DT_ALIAS(led1)//led azul 
+#define verde DT_ALIAS(led0)
+#define azul DT_ALIAS(led1)
 
 // Verifica se o LED está definido no Device Tree
-#if DT_NODE_HAS_STATUS(LED0_NODE, okay)
-static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
-#else
-#error "Unsupported board: led0 devicetree alias is not defined"
-#endif
 
-#if DT_NODE_HAS_STATUS(LED1_NODE, okay)
-static const struct gpio_dt_spec led_azul = GPIO_DT_SPEC_GET(LED1_NODE, gpios);
-#else
-#error "Unsupported board: led1 devicetree alias is not defined"
-#endif
+static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
+static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
 
-void main(void)
+int main(void)
 {
-    int ret;
-
-    // Verifica se o led verde está pronto
-    if (!gpio_is_ready_dt(&led_verde)) {
-        printk("Error: LED device %s is not ready\n", led_verde.port->name);
-        return;
-    }
-
-    // Verifica se o dispositivo do LED azul está pronto
-    if (!gpio_is_ready_dt(&led_azul)) {
-        printk("Error: Blue LED device %s is not ready\n", led_azul.port->name);
-        return;
-    }
-
-    // Configura o pino como saída
-    ret = gpio_pin_configure_dt(&led_verde, GPIO_OUTPUT_ACTIVE);
-    if (ret < 0) {
-        printk("Error %d: failed to configure LED pin\n", ret);
-        return;
-    }
-
-    // Configura o pino do LED azul como saída
-    ret = gpio_pin_configure_dt(&led_azul, GPIO_OUTPUT_ACTIVE);
-    if (ret < 0) {
-        printk("Error %d: failed to configure Blue LED pin\n", ret);
-        return;
-    }
-
-
-    printk("LED verde blinking on %s pin %d\n", led_verde.port->name, led_verde.pin);
-
-    printk("LED azul blinking on %s pin %d\n", led_azul.port->name, led_azul.pin);
-
-    uint32_t counter = 0;
+    int g,b;
+    g = gpio_pin_configure_dt(&verde, GPIO_OUTPUT_ACTIVE);
+    b = gpio_pin_configure_dt(&azul, GPIO_OUTPUT_ACTIVE);
+    gpio_pin_toggle_dt(&azul);
+    gpio_pin_toggle_dt(&verde);
 
     while (1) {
-        // Toggle do LED usando a nova API
-        //para (counter == X)
-        if (counter == 350)
-        {
-            gpio_pin_set_dt(&led_verde, 1);
-            k_msleep(1);
-            gpio_pin_set_dt(&led_verde, 0);
-        }
-        //para (counter == Y)
-        if (counter == 1000)
-        {
-            gpio_pin_set_dt(&led_azul, 1);
-            k_msleep(1);
-            gpio_pin_set_dt(&led_azul, 0);
-        }
-        counter++;
-        // (counter > MMC de X e Y)
-        if (counter > 7000)
-        {
-            counter = 0;
-        }
-        
-        k_msleep(1);
+
+        k_msleep(tempo);
+        gpio_pin_toggle_dt(&azul);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(10);
+        gpio_pin_toggle_dt(&azul);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(tempo);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(10);
+        gpio_pin_toggle_dt(&verde);
     }
 }
