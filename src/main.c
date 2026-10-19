@@ -2,7 +2,7 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
-#define SLEEP_TIME_MS 500
+#define tempo 500
 
 // Define o LED usando Device Tree
 #define verde DT_ALIAS(led0)
@@ -19,13 +19,20 @@ int main(void)
     int g,b;
     g = gpio_pin_configure_dt(&verde, GPIO_OUTPUT_ACTIVE);
     b = gpio_pin_configure_dt(&azul, GPIO_OUTPUT_ACTIVE);
+    gpio_pin_toggle_dt(&azul);
+    gpio_pin_toggle_dt(&verde);
 
     while (1) {
-        gpio_pin_toggle_dt(&azul);
-        k_msleep(SLEEP_TIME_MS);
-        
+
+        k_msleep(tempo);
         gpio_pin_toggle_dt(&azul);
         gpio_pin_toggle_dt(&verde);
-        k_msleep(SLEEP_TIME_MS);
+        k_msleep(10);
+        gpio_pin_toggle_dt(&azul);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(tempo);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(10);
+        gpio_pin_toggle_dt(&verde);
     }
 }
