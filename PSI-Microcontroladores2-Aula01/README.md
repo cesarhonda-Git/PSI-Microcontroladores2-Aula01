@@ -41,8 +41,8 @@ static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
     printk("LED verde blinking on %s pin %d\n", led_verde.port->name, led_verde.pin);
 
 - [ x ] Abra uma Pull Request
-- [ ] Seu par irá avaliar a Pull Request: adicionar sugestões em issues ou na discussão do PR (ATENÇÃO: o par deve tentar executar os testes propostos, e mesmo em caso de tudo funcionar, registrar em comentários como a validação foi realizada)
-- [ ] Após as pendências serem resolvidas, seu par irá validar as melhorias e aceitar a PR
+- [ x ] Seu par irá avaliar a Pull Request: adicionar sugestões em issues ou na discussão do PR (ATENÇÃO: o par deve tentar executar os testes propostos, e mesmo em caso de tudo funcionar, registrar em comentários como a validação foi realizada)
+- [ x ] Após as pendências serem resolvidas, seu par irá validar as melhorias e aceitar a PR
 
 ### Atividade Threads (implementação individual, validação em dupla)
 - [ ] Crie uma branch chamada threads
