@@ -1,49 +1,31 @@
-//versão 4.2
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+
+#define SLEEP_TIME_MS 500
+
+// Define o LED usando Device Tree
+#define verde DT_ALIAS(led0)
+#define azul DT_ALIAS(led1)
+
+// Verifica se o LED está definido no Device Tree
+
+static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
+static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
 
 
-#include <zephyr/kernel.h>             // Funções básicas do Zephyr (ex: k_msleep, k_thread, etc.)
-#include <zephyr/device.h>             // API para obter e utilizar dispositivos do sistema
-#include <zephyr/drivers/gpio.h>       // API para controle de pinos de entrada/saída (GPIO)
-
-#include <math.h>                      //livraria de operações matematicas padrão
-#include <pwm_z42.h>                   //biblioteca do pulse width module
-
-
-void setup(void) { //pois quanto menor o main, melhor!
-    //sensorUltrassonicoInit();
-
-    //iniciação do clock da porta (eu acho)
-
-    pwm_tpm_Init(TPM0, TPM_PLLFLL, 100, TPM_CLK, PS_128, EDGE_PWM);
-    pwm_tpm_Init(TPM2, TPM_PLLFLL, 1000, TPM_CLK, PS_128, EDGE_PWM);
-
-        pwm_tpm_Ch_Init(TPM2, 0, TPM_PWM_H, GPIOB, 18); //led vermelho
-        pwm_tpm_Ch_Init(TPM2, 1, TPM_PWM_H, GPIOB, 19); //led verde
-        pwm_tpm_Ch_Init(TPM0, 1, TPM_PWM_H, GPIOD, 1);
-
-}
-
-int main (void)
+int main(void)
 {
-    int p=20;
-    setup();
+    int g,b;
+    g = gpio_pin_configure_dt(&verde, GPIO_OUTPUT_ACTIVE);
+    b = gpio_pin_configure_dt(&azul, GPIO_OUTPUT_ACTIVE);
 
     while (1) {
-
-        pwm_tpm_CnV(TPM2, 1, 2000);
-        pwm_tpm_CnV(TPM2, 0, 1000);
-        pwm_tpm_CnV(TPM0, 1, 0);
-
-        k_msleep(p);
-        pwm_tpm_CnV(TPM2, 1, 2000);
-        pwm_tpm_CnV(TPM2, 0, 0);
-        pwm_tpm_CnV(TPM0, 1, 2000);
-
-        k_msleep(p);
-        pwm_tpm_CnV(TPM2, 1, 0);
-        pwm_tpm_CnV(TPM2, 0, 2000);
-        pwm_tpm_CnV(TPM0, 1, 2000);
-
-        k_msleep(p);
-   }
+        gpio_pin_toggle_dt(&azul);
+        k_msleep(SLEEP_TIME_MS);
+        
+        gpio_pin_toggle_dt(&azul);
+        gpio_pin_toggle_dt(&verde);
+        k_msleep(SLEEP_TIME_MS);
+    }
 }
