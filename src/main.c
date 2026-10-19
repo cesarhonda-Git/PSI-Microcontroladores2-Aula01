@@ -14,7 +14,7 @@ void setup(void) { //pois quanto menor o main, melhor!
 
     //iniciação do clock da porta (eu acho)
 
-    pwm_tpm_Init(TPM0, TPM_PLLFLL, 1000, TPM_CLK, PS_128, EDGE_PWM);
+    pwm_tpm_Init(TPM0, TPM_PLLFLL, 100, TPM_CLK, PS_128, EDGE_PWM);
     pwm_tpm_Init(TPM2, TPM_PLLFLL, 1000, TPM_CLK, PS_128, EDGE_PWM);
 
         pwm_tpm_Ch_Init(TPM2, 0, TPM_PWM_H, GPIOB, 18); //led vermelho
