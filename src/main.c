@@ -8,6 +8,10 @@
 #define LED0_NODE DT_ALIAS(led0)//led verde 
 #define LED1_NODE  DT_ALIAS(led1)//led azul 
 
+#define STACK_SIZE 1024
+#define PRIORITY 5
+
+
 // Verifica se o LED está definido no Device Tree
 #if DT_NODE_HAS_STATUS(LED0_NODE, okay)
 static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
@@ -21,8 +25,38 @@ static const struct gpio_dt_spec led_azul = GPIO_DT_SPEC_GET(LED1_NODE, gpios);
 #error "Unsupported board: led1 devicetree alias is not defined"
 #endif
 
-void main(void)
-{
+K_THREAD_STACK_DEFINE(stack_azul, STACK_SIZE);
+struct k_thread data_azul;
+
+K_THREAD_STACK_DEFINE(stack_verde, STACK_SIZE);
+struct k_thread data_verde;
+
+void thread_led_azul(void *p1, void *p2, void *p3) {
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+    while (1) {
+        gpio_pin_set_dt(&led_azul, 1);
+        k_msleep(1);
+        gpio_pin_set_dt(&led_azul, 0);
+        k_msleep(1000);
+    }
+}
+
+void thread_led_verde(void *p1, void *p2, void *p3) {
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+    while (1) {
+        gpio_pin_set_dt(&led_verde, 1);
+        k_msleep(1);
+        gpio_pin_set_dt(&led_verde, 0);
+        k_msleep(500);
+    }
+}
+
+
+void main(void) {
     int ret;
 
     // Verifica se o led verde está pronto
@@ -56,31 +90,11 @@ void main(void)
 
     printk("LED azul blinking on %s pin %d\n", led_azul.port->name, led_azul.pin);
 
-    uint32_t counter = 0;
+k_thread_create(&data_azul, stack_azul, K_THREAD_STACK_SIZEOF(stack_azul),
+                    thread_led_azul, NULL, NULL, NULL,
+                    PRIORITY, 0, K_NO_WAIT);
+k_thread_create(&data_verde, stack_verde, K_THREAD_STACK_SIZEOF(stack_verde),
+                    thread_led_verde, NULL, NULL, NULL,
+                    PRIORITY, 0, K_NO_WAIT);
 
-    while (1) {
-        // Toggle do LED usando a nova API
-        //para (counter == X)
-        if (counter%350 == 0)
-        {
-            gpio_pin_set_dt(&led_verde, 1);
-            k_msleep(1);
-            gpio_pin_set_dt(&led_verde, 0);
-        }
-        //para (counter == Y)
-        if (counter%1000 == 0)
-        {
-            gpio_pin_set_dt(&led_azul, 1);
-            k_msleep(1);
-            gpio_pin_set_dt(&led_azul, 0);
-        }
-        counter++;
-        // (counter > MMC de X e Y)
-        if (counter > 7000)
-        {
-            counter = 0;
-        }
-        
-        k_msleep(1);
-    }
 }
