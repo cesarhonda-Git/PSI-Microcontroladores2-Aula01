@@ -71,9 +71,9 @@ static const struct gpio_dt_spec led_verde = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 4) E damos como saida no terminal o pino e a porta do led, como em:
     printk("LED verde blinking on %s pin %d\n", led_verde.port->name, led_verde.pin);
     
-- [ ] Abra uma Pull Request
-- [ ] Seu par irá avaliar a Pull Request: adicionar sugestões em issues ou na discussão do PR (ATENÇÃO: o par deve tentar executar os testes propostos, e mesmo em caso de tudo funcionar, registrar em comentários como a validação foi realizada)
-- [ ] Após as pendências serem resolvidas, seu par irá validar as melhorias e aceitar a PR
+- [ x ] Abra uma Pull Request
+- [ x ] Seu par irá avaliar a Pull Request: adicionar sugestões em issues ou na discussão do PR (ATENÇÃO: o par deve tentar executar os testes propostos, e mesmo em caso de tudo funcionar, registrar em comentários como a validação foi realizada)
+- [ x ] Após as pendências serem resolvidas, seu par irá validar as melhorias e aceitar a PR
 
 ### Desafio (individual)
 - [ ] Explore recursos de debug e faça um arquivo markdown mostrando como estes recursos podem ser úteis na identificação e correção de problemas
