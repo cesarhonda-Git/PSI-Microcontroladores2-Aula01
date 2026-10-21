@@ -14,55 +14,43 @@
 
 // Verifica se o LED está definido no Device Tree
 
-static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
-static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
+static const struct gpio_dt_spec green = GPIO_DT_SPEC_GET(verde, gpios);
+static const struct gpio_dt_spec blue = GPIO_DT_SPEC_GET(azul, gpios);
 
-K_THREAD_STACK_DEFINE(stack_azul, STACK_SIZE);
-struct k_thread data_azul;
+#define STACK_SIZE 1024
+#define PRIORITY 5
 
-K_THREAD_STACK_DEFINE(stack_verde, STACK_SIZE);
-struct k_thread data_verde;
-
-void thread_led_azul(void *p1, void *p2, void *p3) {
-    ARG_UNUSED(p1);
-    ARG_UNUSED(p2);
-    ARG_UNUSED(p3);
+void minha_thread(void)
+{
     while (1) {
-        gpio_pin_set_dt(&led_azul, 1);
-        k_msleep(1);
-        gpio_pin_set_dt(&led_azul, 0);
+        gpio_pin_toggle_dt(&blue);
         k_msleep(1000);
     }
 }
 
-void thread_led_verde(void *p1, void *p2, void *p3) {
-    ARG_UNUSED(p1);
-    ARG_UNUSED(p2);
-    ARG_UNUSED(p3);
+void gustavo(void)
+{
     while (1) {
-        gpio_pin_set_dt(&led_verde, 1);
-        k_msleep(1);
-        gpio_pin_set_dt(&led_verde, 0);
+        gpio_pin_toggle_dt(&green);
         k_msleep(350);
     }
 }
 
+// Criar a thread
+K_THREAD_DEFINE(minha_thread_id, 512, minha_thread, NULL, NULL, NULL, 7, 0, 0);
+K_THREAD_DEFINE(rehder, 512, gustavo, NULL, NULL, NULL, 6, 0, 0);
 
-void main(void) {
-    int ret;
+int main(void)
+{
+        int g, b;
 
-    // Verifica se o led verde está pronto
-    if (!gpio_is_ready_dt(&led_verde)) {
-        printk("Error: LED device %s is not ready\n", led_verde.port->name);
-        return;
+   g = gpio_pin_configure_dt(&green, GPIO_OUTPUT_ACTIVE);
+    b = gpio_pin_configure_dt(&blue, GPIO_OUTPUT_ACTIVE);
+    
+    while (1) {
+        k_msleep(2000);
     }
-
-    // Verifica se o dispositivo do LED azul está pronto
-    if (!gpio_is_ready_dt(&led_azul)) {
-        printk("Error: Blue LED device %s is not ready\n", led_azul.port->name);
-        return;
-    }
-
+https://github.com/isaak-nunes/Baremetal/pull/4/conflict?name=src%252Fmain.c&ancestor_oid=e6a5f3f1d691a496fe4dbd728716955051b4ee42&base_oid=f5d0410a76635c2d7b9c17cbdc953b4d272a0ba6&head_oid=7c64e3b3cfd3e26b0d3a4ade4be03d0ac749dd2b
     // Configura o pino como saída
     ret = gpio_pin_configure_dt(&led_verde, GPIO_OUTPUT_ACTIVE);
     if (ret < 0) {
