@@ -8,30 +8,85 @@
 #define verde DT_ALIAS(led0)
 #define azul DT_ALIAS(led1)
 
+#define STACK_SIZE 1024
+#define PRIORITY 5
+//atualizado
+
 // Verifica se o LED está definido no Device Tree
 
 static const struct gpio_dt_spec verde = GPIO_DT_SPEC_GET(verde, gpios);
 static const struct gpio_dt_spec azul = GPIO_DT_SPEC_GET(azul, gpios);
 
-int main(void)
-{
-    int g,b;
-    g = gpio_pin_configure_dt(&verde, GPIO_OUTPUT_ACTIVE);
-    b = gpio_pin_configure_dt(&azul, GPIO_OUTPUT_ACTIVE);
-    gpio_pin_toggle_dt(&azul);
-    gpio_pin_toggle_dt(&verde);
+K_THREAD_STACK_DEFINE(stack_azul, STACK_SIZE);
+struct k_thread data_azul;
 
+K_THREAD_STACK_DEFINE(stack_verde, STACK_SIZE);
+struct k_thread data_verde;
+
+void thread_led_azul(void *p1, void *p2, void *p3) {
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
     while (1) {
-
-        k_msleep(tempo);
-        gpio_pin_toggle_dt(&azul);
-        gpio_pin_toggle_dt(&verde);
-        k_msleep(10);
-        gpio_pin_toggle_dt(&azul);
-        gpio_pin_toggle_dt(&verde);
-        k_msleep(tempo);
-        gpio_pin_toggle_dt(&verde);
-        k_msleep(10);
-        gpio_pin_toggle_dt(&verde);
+        gpio_pin_set_dt(&led_azul, 1);
+        k_msleep(1);
+        gpio_pin_set_dt(&led_azul, 0);
+        k_msleep(1000);
     }
+}
+
+void thread_led_verde(void *p1, void *p2, void *p3) {
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+    while (1) {
+        gpio_pin_set_dt(&led_verde, 1);
+        k_msleep(1);
+        gpio_pin_set_dt(&led_verde, 0);
+        k_msleep(350);
+    }
+}
+
+
+void main(void) {
+    int ret;
+
+    // Verifica se o led verde está pronto
+    if (!gpio_is_ready_dt(&led_verde)) {
+        printk("Error: LED device %s is not ready\n", led_verde.port->name);
+        return;
+    }
+
+    // Verifica se o dispositivo do LED azul está pronto
+    if (!gpio_is_ready_dt(&led_azul)) {
+        printk("Error: Blue LED device %s is not ready\n", led_azul.port->name);
+        return;
+    }
+
+    // Configura o pino como saída
+    ret = gpio_pin_configure_dt(&led_verde, GPIO_OUTPUT_ACTIVE);
+    if (ret < 0) {
+        printk("Error %d: failed to configure LED pin\n", ret);
+        return;
+    }
+
+    // Configura o pino do LED azul como saída
+    ret = gpio_pin_configure_dt(&led_azul, GPIO_OUTPUT_ACTIVE);
+    if (ret < 0) {
+        printk("Error %d: failed to configure Blue LED pin\n", ret);
+        return;
+    }
+
+
+    printk("LED verde blinking on %s pin %d\n", led_verde.port->name, led_verde.pin);
+
+    printk("LED azul blinking on %s pin %d\n", led_azul.port->name, led_azul.pin);
+
+k_thread_create(&data_azul, stack_azul, K_THREAD_STACK_SIZEOF(stack_azul),
+                    thread_led_azul, NULL, NULL, NULL,
+                    PRIORITY, 0, K_NO_WAIT);
+k_thread_create(&data_verde, stack_verde, K_THREAD_STACK_SIZEOF(stack_verde),
+                    thread_led_verde, NULL, NULL, NULL,
+                    PRIORITY, 0, K_NO_WAIT);
+
 }
