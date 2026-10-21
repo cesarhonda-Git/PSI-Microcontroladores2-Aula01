@@ -2,11 +2,9 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
-#define tempo 500
-
 // Define o LED usando Device Tree
-#define verde DT_ALIAS(led0)
-#define azul DT_ALIAS(led1)
+#define led_verde DT_ALIAS(led0)
+#define led_azul DT_ALIAS(led1)
 
 #define STACK_SIZE 1024
 #define PRIORITY 5
